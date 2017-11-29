@@ -20,13 +20,13 @@ for i in range(4):
 invSigGrid = np.matrix([[9.4675, 0],[0, 9.4675]])#check MATLAB mountain_car_calc_score.m
 
 ###############################################################################
-def evaluate_policy(theta,actionSet, env):
+def evaluate_policy(theta,actionSet, env, nActions):
     total_reward = 0    
     s = env.reset()
     s = normalizeS(s, env)
     while(True):        
         #predict array of action probabilities
-        probs = policy(s, theta, xBar)# probability of actions given states    
+        probs = policy(s, theta, xBar, nActions)# probability of actions given states    
         a = np.random.choice(actionSet,p = probs)
         new_s,r,done,info = env.step(a)
         s = normalizeS(new_s, env)
@@ -46,7 +46,7 @@ def evaluate_policy(theta,actionSet, env):
 def normalizeS(s,env):
     return (s -env.observation_space.low )/(env.observation_space.high - env.observation_space.low)
 ###############################################################################
-def policy(s, theta, xBar):
+def policy(s, theta, xBar, nActions):
     kappa =  1.3*0.25
     phi = np.diag(np.exp(- (s-xBar).dot(invSigGrid).dot((s-xBar).T) / (2*kappa**2))) 
     theta2 = theta.reshape([nActions,16])
